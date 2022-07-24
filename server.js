@@ -1,11 +1,12 @@
 //variable declaration
-const { notStrictEqual } = require("assert");
+// const { notStrictEqual } = require("assert");
 const express = require("express");
 const path = require("path");
 const app = express();
 const uuid = require('./helpers/uuid');
 const db = require("./db/db.json")
-const fs = require("fs")
+const fs = require("fs");
+// const { resolveSoa } = require("dns");
 const PORT = process.env.PORT || 3001;
 
 //middleware
@@ -29,8 +30,6 @@ app.post('/api/notes', (req, res) => {
     console.log(`${req.method} request received to add a note`);
 
     const { title, text } = req.body;
-    // const title = req.body.title
-    // const text = req.body.text
 
     if (title && text) {
         const newNote = {
@@ -38,15 +37,23 @@ app.post('/api/notes', (req, res) => {
             text: text,
             note_id: uuid(),
         }
-        const response = {
-            status: "success",
-            body: newNote,
-        }
-        console.log(response);
-        res.json(response)
+        console.log(title)
+        console.log(text)
+        // const response = {
+        //     status: "success",
+        //     body: newNote,
+        // }
+        // console.log(response);
+        // res.json(response)
 
         db.push(newNote)
-        
+
+        fs.writeFile("./db/db.json", JSON.stringify(db), err => {
+            err ? console.error(err) : console.log('Success!')
+        })
+
+        res.send(db)
+
     } else {
         res.json("Error in posting note")
     }
