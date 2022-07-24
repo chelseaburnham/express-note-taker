@@ -37,14 +37,6 @@ app.post('/api/notes', (req, res) => {
             text: text,
             note_id: uuid(),
         }
-        console.log(title)
-        console.log(text)
-        // const response = {
-        //     status: "success",
-        //     body: newNote,
-        // }
-        // console.log(response);
-        // res.json(response)
 
         db.push(newNote)
 
@@ -62,3 +54,7 @@ app.post('/api/notes', (req, res) => {
 app.listen(PORT, () => {
     console.log(`App listening at http://localhost:${PORT}`);
   });
+
+app.delete('/', (req, res) => {
+  res.send("DELETE Request Called")
+})
