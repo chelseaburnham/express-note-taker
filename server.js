@@ -4,7 +4,7 @@ const express = require("express");
 const path = require("path");
 const app = express();
 const uuid = require('./helpers/uuid');
-const db = require("./db/db.json")
+var db = require("./db/db.json")
 const fs = require("fs");
 // const { resolveSoa } = require("dns");
 const PORT = process.env.PORT || 3001;
@@ -16,13 +16,15 @@ app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname, "./public/index.html");
-  });
+});
 
-app.get("/notes", (req, res)=> {
+app.get("/notes", (req, res) => {
+    console.log("Inside of get notes")
     res.sendFile(path.join(__dirname, "./public/notes.html"))
 })
 
 app.get("/api/notes", (req, res) => {
+    console.log("inside of api notes")
     res.json(db)
 })
 
@@ -35,7 +37,7 @@ app.post('/api/notes', (req, res) => {
         const newNote = {
             title: title,
             text: text,
-            note_id: uuid(),
+            id: uuid(),
         }
 
         db.push(newNote)
@@ -53,8 +55,20 @@ app.post('/api/notes', (req, res) => {
 
 app.listen(PORT, () => {
     console.log(`App listening at http://localhost:${PORT}`);
-  });
+});
 
-app.delete('/', (req, res) => {
-  res.send("DELETE Request Called")
+app.delete('/api/notes/:id', (req, res) => {
+    let newDb = []
+    console.log(req.params)
+    for (let i = 0; i < db.length; i++) {
+        console.log(db[i])
+        if (db[i].id != req.params.id) {
+            newDb.push(db[i])
+        }
+    }
+    fs.writeFile("./db/db.json", JSON.stringify(newDb), err => {
+        err ? console.error(err) : console.log('Success!')
+    })
+    db = newDb
+    res.send(newDb)
 })
