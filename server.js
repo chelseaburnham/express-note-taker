@@ -1,12 +1,10 @@
 //variable declaration
-// const { notStrictEqual } = require("assert");
 const express = require("express");
 const path = require("path");
 const app = express();
 const uuid = require('./helpers/uuid');
 var db = require("./db/db.json")
 const fs = require("fs");
-// const { resolveSoa } = require("dns");
 const PORT = process.env.PORT || 3001;
 
 //middleware
@@ -57,6 +55,7 @@ app.listen(PORT, () => {
     console.log(`App listening at http://localhost:${PORT}`);
 });
 
+//deletes notes using the delete button
 app.delete('/api/notes/:id', (req, res) => {
     let newDb = []
     console.log(req.params)
